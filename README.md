@@ -1,5 +1,5 @@
 # Pandora 3D Plus SD games explore
-This program helps add favorite games to your Pandora Box 3D plus SD card. 
+This program helps you to add your favorite games to your Pandora Box 3D plus SD card. 
 
 
 ![screen short](png/screenshort.PNG)
