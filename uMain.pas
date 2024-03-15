@@ -107,6 +107,8 @@ type
     dsFavoritos: TDataSource;
     qFavoritesEMULATOR: TIntegerField;
     qFavoritesGENRE: TIntegerField;
+    sbUnmount: TSpeedButton;
+    SpeedButton1: TSpeedButton;
 
     procedure qGamesEMULATORGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
@@ -146,6 +148,8 @@ type
     procedure qFavoritesGENREGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
     procedure FormActivate(Sender: TObject);
+    procedure sbUnmountClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -178,6 +182,7 @@ procedure TfrmMain.GetDrives;
 var
   Drive : Char;
 begin
+  cbDrivers.Items.Clear;
   for Drive := 'A' to 'Z' do
   begin
     if GetDriveType(PChar(Drive + ':\')) in [DRIVE_REMOVABLE] then   //, DRIVE_CDROM, DRIVE_RAMDISK
@@ -321,6 +326,7 @@ begin
     FindRom('', -1, -1);
     qFavorites.Open();
     ShowRecNum;
+    sbUnmount.Enabled := True;
   except
       on E : EDataBaseError do
         begin
@@ -347,6 +353,25 @@ begin
     uAddFile.ShowForm(Game);
   end;
   qGames.Refresh;
+end;
+
+procedure TfrmMain.sbUnmountClick(Sender: TObject);
+begin
+ try
+    WindowsMediaPlayer1.close;
+    FDConnection1.Close;
+
+    EjectVolume(SDDrive);
+    sbUnmount.Enabled := False;
+    GetDrives;
+  finally
+    ShowMessage('You can now safely remove SD card');
+  end;
+end;
+
+procedure TfrmMain.SpeedButton1Click(Sender: TObject);
+begin
+  GetDrives;
 end;
 
 procedure TfrmMain.SpeedButton2Click(Sender: TObject);
@@ -694,7 +719,8 @@ begin
 end;
 procedure TfrmMain.FormActivate(Sender: TObject);
 begin
-  qGames.Refresh;
+  if qGames.Active then
+    qGames.Refresh;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -729,6 +755,12 @@ begin
     cbEmulator.AddItem(Emu[i].Name, TObject(Integer(Emu[i].Id)));
   end;
   cbEmulator.ItemIndex := 0;
+  if SDDrive = #0 then
+  begin
+      sbUnmount.Enabled := False;
+      //sbUnmount.Caption := 'Mount Micro SD';
+  end;
+
 
 end;
 
