@@ -1,1 +1,2 @@
-Win32\Debug\
+Win32/Debug/
+*.~*

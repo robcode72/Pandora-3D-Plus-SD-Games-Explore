@@ -16,7 +16,8 @@ uses
   WMPLib_TLB, Vcl.Imaging.jpeg, Vcl.Imaging.pngimage, Vcl.ComCtrls,
   System.ImageList, Vcl.ImgList, System.Rtti, System.Bindings.Outputs,
   Vcl.Bind.Editors, Data.Bind.EngExt, Vcl.Bind.DBEngExt, Data.Bind.Components,
-  Data.Bind.DBScope, Data.SqlExpr, FireDAC.Moni.Base, FireDAC.Moni.RemoteClient;
+  Data.Bind.DBScope, Data.SqlExpr, FireDAC.Moni.Base, FireDAC.Moni.RemoteClient,
+  Vcl.Menus, SHellApi, System.Actions, Vcl.ActnList, Vcl.StdActns;
 
 
 type
@@ -109,6 +110,25 @@ type
     qFavoritesGENRE: TIntegerField;
     sbUnmount: TSpeedButton;
     SpeedButton1: TSpeedButton;
+    mnMain: TMainMenu;
+    File1: TMenuItem;
+    ools1: TMenuItem;
+    YouTubeDownload1: TMenuItem;
+    Close1: TMenuItem;
+    N1: TMenuItem;
+    Exportto1: TMenuItem;
+    ImportFavorites1: TMenuItem;
+    SaveDialog: TSaveDialog;
+    ActionList1: TActionList;
+    actSaveDB: TAction;
+    actSaveFav: TAction;
+    SaveFavoritesto1: TMenuItem;
+    N2: TMenuItem;
+    OpenDialog: TOpenDialog;
+    actImport: TAction;
+    FDMemTable: TFDMemTable;
+    Clearfavoritelist1: TMenuItem;
+    N3: TMenuItem;
 
     procedure qGamesEMULATORGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
@@ -133,7 +153,6 @@ type
     procedure lbledtFindChange(Sender: TObject);
     procedure sbDownClick(Sender: TObject);
     procedure sbUpClick(Sender: TObject);
-    procedure sbExportClick(Sender: TObject);
     procedure sbAddGameClick(Sender: TObject);
     procedure TaskDialogButtonClicked(Sender: TObject;
       ModalResult: TModalResult; var CanClose: Boolean);
@@ -150,6 +169,16 @@ type
     procedure FormActivate(Sender: TObject);
     procedure sbUnmountClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
+    procedure Close1Click(Sender: TObject);
+    procedure YouTubeDownload1Click(Sender: TObject);
+    procedure DBGrid1TitleClick(Column: TColumn);
+    procedure Exportto1Click(Sender: TObject);
+    procedure FileSaveAsBeforeExecute(Sender: TObject);
+    procedure FileSaveAsSaveDialogClose(Sender: TObject);
+    procedure actSaveDBExecute(Sender: TObject);
+    procedure actSaveFavExecute(Sender: TObject);
+    procedure actImportExecute(Sender: TObject);
+    procedure Clearfavoritelist1Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -519,11 +548,6 @@ begin
 
 end;
 
-procedure TfrmMain.sbExportClick(Sender: TObject);
-begin
-  ExportaExcel(qFavorites);
-end;
-
 procedure TfrmMain.WindowsMediaPlayer1StatusChange(Sender: TObject);
 begin
   if WindowsMediaPlayer1.status = 'Finalizado' then
@@ -537,6 +561,65 @@ begin
   end;
 end;
 
+procedure TfrmMain.YouTubeDownload1Click(Sender: TObject);
+var
+  pathfile : PAnsiChar;
+  AnsiStr: AnsiString;
+begin
+  pathfile := PAnsiChar(AnsiString(ExtractFileDir(Application.ExeName) + '\tools\ytd.exe'));
+  WinExec(pathfile, CmdShow);
+end;
+
+procedure TfrmMain.actImportExecute(Sender: TObject);
+begin
+  // Delete Favorites
+
+  if OpenDialog.Execute then
+  begin
+    if OpenDialog.FileName <> '' then
+    begin
+      if FileExists(OpenDialog.FileName) then
+        Case OpenDialog.FilterIndex of
+          1 : begin
+                ImportCSVToDataset(true, FDMemTable, OpenDialog.FileName);  // CSV
+                if FDMemTable.Active then
+                  ImportFavorites(FDMemTable, qGames_Update, False); // Import data to the DataBase
+              end;
+          2 : ;  // Excel
+        end;
+    end;
+  end;
+  qGames.Refresh;
+  qFavorites.Refresh;
+end;
+
+procedure TfrmMain.actSaveDBExecute(Sender: TObject);
+begin
+  SaveDialog.FileName := 'Games';
+  if SaveDialog.Execute then
+    if SaveDialog.FileName <> '' then
+    begin
+     case SaveDialog.FilterIndex of
+        1 : SaveDatasetToCSV(True, qGames,SaveDialog.FileName);
+        2 : ExportaExcel(qGames);
+      end;
+    end;
+
+end;
+
+procedure TfrmMain.actSaveFavExecute(Sender: TObject);
+begin
+  SaveDialog.FileName := 'Favorites';
+  if SaveDialog.Execute then
+    if SaveDialog.FileName <> '' then
+    begin
+     case SaveDialog.FilterIndex of
+        1 : SaveDatasetToCSV(True, qFavorites, SaveDialog.FileName);
+        2 : ExportaExcel(qFavorites);
+      end;
+    end;
+end;
+
 procedure TfrmMain.cbDriversClick(Sender: TObject);
 begin
   qGames.Close;
@@ -544,10 +627,26 @@ begin
   sbOpen.OnClick(Self);
 end;
 
+procedure TfrmMain.Clearfavoritelist1Click(Sender: TObject);
+begin
+// ## Reset Favorite List ##
+   qGames_Update.SQL.Text := 'UPDATE option SET TOP_ID =0 WHERE TOP_ID > 0 ';
+   qGames_Update.ExecSQL;
+   qGames_Update.SQL.Text := 'UPDATE option SET TOP_ID =:num WHERE ROM_NAME =:rom_name';
+   qFavorites.Refresh;
+   qGames.Refresh;
+end;
+
+procedure TfrmMain.Close1Click(Sender: TObject);
+begin
+  Application.Terminate;
+end;
+
 procedure TfrmMain.DBGrid1DblClick(Sender: TObject);
 var
   i : Integer;
 begin
+  // Assign a game as your Favorite
   i := qFavorites.RecordCount +1;
   qGames_Update.ParamByName('num').AsInteger := i;
   qGames_Update.ParamByName('rom_name').AsString := qGamesROM_NAME.AsString;
@@ -633,6 +732,22 @@ begin
     DBGrid1.DefaultDrawDataCell(Rect,field,State);
 end;
 
+procedure TfrmMain.DBGrid1TitleClick(Column: TColumn);
+var
+  i : Integer;
+begin
+  for i := 0 to DBGrid1.Columns.Count -1 do
+  begin
+    DBGrid1.Columns.Items[i].Title.Font.Style := [];
+    DBGrid1.Columns.Items[i].Font.Color := clBlack;
+    DBGrid1.Columns.Items[i].Font.Style := [];
+  end;
+  Column.Font.Color := clBlack;
+  Column.Font.Style := [fsBold];
+  qGames.IndexFieldNames := Column.FieldName;
+  Column.Title.Font.Style := [fsBold];
+end;
+
 procedure TfrmMain.dsGamesDataChange(Sender: TObject; Field: TField);
 var
   i : Integer;
@@ -662,10 +777,29 @@ if dsGames.State in [dsBrowse] then
   end;
 end;
 
+procedure TfrmMain.Exportto1Click(Sender: TObject);
+begin
+  ExportaExcel(qFavorites);
+end;
+
 procedure TfrmMain.FDConnection1Error(ASender, AInitiator: TObject;
   var AException: Exception);
 begin
   raise Exception.Create(AException.Message);
+end;
+
+procedure TfrmMain.FileSaveAsBeforeExecute(Sender: TObject);
+begin
+  SaveDialog.FilterIndex := 1;
+end;
+
+procedure TfrmMain.FileSaveAsSaveDialogClose(Sender: TObject);
+begin
+   if SaveDialog.FileName <> '' then
+   case SaveDialog.FilterIndex of
+      1 : SaveDatasetToCSV(True, qGames,SaveDialog.FileName + '.csv');
+      2 : ExportaExcel(qFavorites);
+    end;
 end;
 
 procedure TfrmMain.FindRom(RomName : String; Genre, emu : Integer);
@@ -728,6 +862,8 @@ var
   i : Integer;
 
 begin
+  sbExport.Caption := '';
+
   for I := 0 to 17 do
   begin
     Emu[i].Name := Emuladores[i];
@@ -760,8 +896,6 @@ begin
       sbUnmount.Enabled := False;
       //sbUnmount.Caption := 'Mount Micro SD';
   end;
-
-
 end;
 
 end.

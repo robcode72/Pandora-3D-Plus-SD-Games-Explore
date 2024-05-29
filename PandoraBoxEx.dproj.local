@@ -4,19 +4,19 @@
     <Transaction>2024/02/23 14:30:13.000.378,=E:\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>2024/02/27 12:31:48.000.563,=E:\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
     <Transaction>2024/03/01 19:37:47.000.266,=E:\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2024/03/01 20:02:24.000.621,E:\PROYECTOS\PandoraBox Explore\uMain.pas=E:\Documentos\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
-    <Transaction>2024/03/01 20:02:24.000.621,E:\PROYECTOS\PandoraBox Explore\uMain.dfm=E:\Documentos\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
-    <Transaction>2024/03/01 20:02:35.000.444,E:\PROYECTOS\PandoraBox Explore\PandoraBoxEx.dproj=E:\Documentos\Embarcadero\Studio\Projects\Project1.dproj</Transaction>
+    <Transaction>2024/03/01 20:02:24.000.621,E:\Documentos\Embarcadero\Studio\Projects\Unit1.dfm=E:\PROYECTOS\PandoraBox Explore\uMain.dfm</Transaction>
+    <Transaction>2024/03/01 20:02:24.000.621,E:\Documentos\Embarcadero\Studio\Projects\Unit1.pas=E:\PROYECTOS\PandoraBox Explore\uMain.pas</Transaction>
+    <Transaction>2024/03/01 20:02:35.000.444,E:\Documentos\Embarcadero\Studio\Projects\Project1.dproj=E:\PROYECTOS\PandoraBox Explore\PandoraBoxEx.dproj</Transaction>
     <Transaction>2024/03/05 11:28:28.000.262,=E:\Documentos\Embarcadero\Studio\21.0\Imports\WMPLib_TLB.pas</Transaction>
     <Transaction>2024/03/05 11:29:09.000.816,E:\Documentos\Embarcadero\Studio\21.0\Imports\WMPLib_TLB.pas=</Transaction>
     <Transaction>2024/03/05 18:21:55.000.347,=E:\PROYECTOS\PandoraBox Explore\uExcel.pas</Transaction>
     <Transaction>2024/03/06 11:00:00.000.139,=E:\PROYECTOS\PandoraBox Explore\Unit2.pas</Transaction>
-    <Transaction>2024/03/06 11:04:48.000.241,E:\PROYECTOS\PandoraBox Explore\Unit2.dfm=E:\PROYECTOS\PandoraBox Explore\uAddFile.dfm</Transaction>
-    <Transaction>2024/03/06 11:04:48.000.241,E:\PROYECTOS\PandoraBox Explore\Unit2.pas=E:\PROYECTOS\PandoraBox Explore\uAddFile.pas</Transaction>
+    <Transaction>2024/03/06 11:04:48.000.241,E:\PROYECTOS\PandoraBox Explore\uAddFile.dfm=E:\PROYECTOS\PandoraBox Explore\Unit2.dfm</Transaction>
+    <Transaction>2024/03/06 11:04:48.000.241,E:\PROYECTOS\PandoraBox Explore\uAddFile.pas=E:\PROYECTOS\PandoraBox Explore\Unit2.pas</Transaction>
     <Transaction>2024/03/06 12:08:00.000.141,=E:\PROYECTOS\PandoraBox Explore\Unit1.pas</Transaction>
-    <Transaction>2024/03/06 12:08:23.000.174,E:\PROYECTOS\PandoraBox Explore\Unit1.pas=E:\PROYECTOS\PandoraBox Explore\uUtils.pas</Transaction>
+    <Transaction>2024/03/06 12:08:23.000.174,E:\PROYECTOS\PandoraBox Explore\uUtils.pas=E:\PROYECTOS\PandoraBox Explore\Unit1.pas</Transaction>
     <Transaction>2024/03/06 12:15:04.000.027,E:\PROYECTOS\PandoraBox Explore\uUtils.pas=</Transaction>
     <Transaction>2024/03/06 13:49:34.000.998,=E:\PROYECTOS\PandoraBox Explore\Unit1.pas</Transaction>
-    <Transaction>2024/03/06 13:49:49.000.987,E:\PROYECTOS\PandoraBox Explore\Unit1.pas=E:\PROYECTOS\PandoraBox Explore\uUtils.pas</Transaction>
+    <Transaction>2024/03/06 13:49:49.000.987,E:\PROYECTOS\PandoraBox Explore\uUtils.pas=E:\PROYECTOS\PandoraBox Explore\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

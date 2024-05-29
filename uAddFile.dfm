@@ -26,57 +26,57 @@ object frmAddFile: TfrmAddFile
     BevelKind = bkSoft
     TabOrder = 0
     object Label1: TLabel
-      Left = 40
-      Top = 190
+      Left = 48
+      Top = 222
       Width = 54
       Height = 13
       Caption = 'EMULATOR'
     end
     object lblGenre: TLabel
-      Left = 191
-      Top = 190
+      Left = 199
+      Top = 222
       Width = 33
       Height = 13
       Caption = 'GENRE'
     end
     object Label2: TLabel
-      Left = 40
-      Top = 332
+      Left = 48
+      Top = 364
       Width = 89
       Height = 13
       Caption = 'DEFAULT_CONFIG'
     end
     object Label3: TLabel
-      Left = 200
-      Top = 332
+      Left = 208
+      Top = 364
       Width = 116
       Height = 13
       Caption = 'SUPPORTED_FEATURES'
     end
     object Label4: TLabel
-      Left = 40
-      Top = 384
+      Left = 48
+      Top = 416
       Width = 31
       Height = 13
       Caption = 'FLAG1'
     end
     object Label5: TLabel
-      Left = 232
-      Top = 384
+      Left = 240
+      Top = 416
       Width = 31
       Height = 13
       Caption = 'FLAG3'
     end
     object Label6: TLabel
-      Left = 137
-      Top = 384
+      Left = 145
+      Top = 416
       Width = 31
       Height = 13
       Caption = 'FLAG2'
     end
     object edtDEFAULT_DISPLAY_NAME: TLabeledEdit
-      Left = 240
-      Top = 155
+      Left = 248
+      Top = 187
       Width = 433
       Height = 21
       EditLabel.Width = 128
@@ -85,16 +85,16 @@ object frmAddFile: TfrmAddFile
       TabOrder = 0
     end
     object cbEMULATOR: TComboBox
-      Left = 40
-      Top = 209
+      Left = 48
+      Top = 241
       Width = 145
       Height = 21
       Style = csDropDownList
       TabOrder = 1
     end
     object edtCOIN_DURATION: TLabeledEdit
-      Left = 40
-      Top = 257
+      Left = 48
+      Top = 289
       Width = 73
       Height = 21
       EditLabel.Width = 133
@@ -106,16 +106,16 @@ object frmAddFile: TfrmAddFile
       Text = '0'
     end
     object cbGENRE: TComboBox
-      Left = 191
-      Top = 209
+      Left = 199
+      Top = 241
       Width = 145
       Height = 21
       Style = csDropDownList
       TabOrder = 3
     end
     object edtLoadTime: TLabeledEdit
-      Left = 40
-      Top = 305
+      Left = 48
+      Top = 337
       Width = 73
       Height = 21
       EditLabel.Width = 117
@@ -127,8 +127,8 @@ object frmAddFile: TfrmAddFile
       Text = '0'
     end
     object edtROM_NAME: TLabeledEdit
-      Left = 40
-      Top = 155
+      Left = 48
+      Top = 187
       Width = 184
       Height = 21
       EditLabel.Width = 57
@@ -139,8 +139,8 @@ object frmAddFile: TfrmAddFile
       TabOrder = 5
     end
     object cbDEFAULT_CONFIG: TComboBox
-      Left = 40
-      Top = 351
+      Left = 48
+      Top = 383
       Width = 145
       Height = 21
       ItemIndex = 0
@@ -156,8 +156,8 @@ object frmAddFile: TfrmAddFile
         '_3.zip')
     end
     object cbSUPPORTED_FEATURES: TComboBox
-      Left = 200
-      Top = 351
+      Left = 208
+      Top = 383
       Width = 145
       Height = 21
       ItemIndex = 5
@@ -175,8 +175,8 @@ object frmAddFile: TfrmAddFile
         '31[savestate]')
     end
     object edtCOIN_INSERT_MODE: TLabeledEdit
-      Left = 351
-      Top = 351
+      Left = 359
+      Top = 383
       Width = 106
       Height = 21
       EditLabel.Width = 103
@@ -188,8 +188,8 @@ object frmAddFile: TfrmAddFile
       Text = '0'
     end
     object cbFLAG1: TComboBox
-      Left = 40
-      Top = 401
+      Left = 48
+      Top = 433
       Width = 89
       Height = 21
       ItemIndex = 0
@@ -201,8 +201,8 @@ object frmAddFile: TfrmAddFile
         '1[n64]')
     end
     object cbFLAG2: TComboBox
-      Left = 137
-      Top = 401
+      Left = 145
+      Top = 433
       Width = 89
       Height = 21
       ItemIndex = 0
@@ -212,8 +212,8 @@ object frmAddFile: TfrmAddFile
         'NULL')
     end
     object cbFLAG3: TComboBox
-      Left = 232
-      Top = 401
+      Left = 240
+      Top = 433
       Width = 89
       Height = 21
       ItemIndex = 0
@@ -223,8 +223,8 @@ object frmAddFile: TfrmAddFile
         'NULL')
     end
     object chkENTERNO: TCheckBox
-      Left = 330
-      Top = 406
+      Left = 338
+      Top = 438
       Width = 65
       Height = 17
       Caption = 'EXTERNA'
@@ -234,45 +234,70 @@ object frmAddFile: TfrmAddFile
       Left = 8
       Top = 9
       Width = 745
-      Height = 112
+      Height = 144
+      Caption = 'Real Path to file'
       TabOrder = 13
-      object SpeedButton4: TSpeedButton
-        Left = 459
-        Top = 72
+      object sbOpenFile: TSpeedButton
+        Left = 572
+        Top = 63
         Width = 23
         Height = 22
         Caption = '...'
-        OnClick = SpeedButton4Click
+        OnClick = sbOpenFileClick
       end
       object SpeedButton3: TSpeedButton
-        Left = 459
-        Top = 32
+        Left = 572
+        Top = 23
         Width = 23
         Height = 22
         Caption = '...'
         OnClick = SpeedButton3Click
       end
+      object SpeedButton4: TSpeedButton
+        Left = 3
+        Top = 63
+        Width = 23
+        Height = 22
+        Hint = 'Past clipboard'
+        ImageIndex = 2
+        Images = frmMain.IlComunes
+        Flat = True
+        ParentShowHint = False
+        ShowHint = True
+        OnClick = SpeedButton4Click
+      end
       object edtVideoFile: TLabeledEdit
-        Left = 24
-        Top = 72
+        Left = 137
+        Top = 63
         Width = 433
         Height = 21
         EditLabel.Width = 86
         EditLabel.Height = 13
         EditLabel.Caption = 'VIDEO_FILE(MP4)'
-        ReadOnly = True
         TabOrder = 0
       end
       object edtFILE_NAME: TLabeledEdit
-        Left = 24
-        Top = 32
+        Left = 137
+        Top = 23
         Width = 433
         Height = 21
         EditLabel.Width = 50
         EditLabel.Height = 13
         EditLabel.Caption = 'ROM_FILE'
-        ReadOnly = True
         TabOrder = 1
+      end
+      object rdFileType: TRadioGroup
+        Left = 137
+        Top = 90
+        Width = 429
+        Height = 36
+        Caption = 'File type'
+        Columns = 2
+        ItemIndex = 1
+        Items.Strings = (
+          'URL from YouTube'
+          'MP4 File')
+        TabOrder = 2
       end
     end
   end

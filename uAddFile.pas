@@ -8,7 +8,7 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client,
+  FireDAC.Comp.Client,System.Net.URLClient,Clipbrd,
   // Imported
   System.IOUtils;
 
@@ -73,14 +73,17 @@ type
     qGames_Update: TFDQuery;
     GroupBox1: TGroupBox;
     edtVideoFile: TLabeledEdit;
-    SpeedButton4: TSpeedButton;
+    sbOpenFile: TSpeedButton;
     SpeedButton3: TSpeedButton;
     edtFILE_NAME: TLabeledEdit;
     qGet_Rec_Num: TFDQuery;
     qGet_Rec_NumCREATE_ID: TIntegerField;
+    rdFileType: TRadioGroup;
+    SpeedButton4: TSpeedButton;
     procedure SpeedButton2Click(Sender: TObject);
     procedure SpeedButton3Click(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
+    procedure sbOpenFileClick(Sender: TObject);
     procedure SpeedButton4Click(Sender: TObject);
   private
     { Private declarations }
@@ -197,7 +200,6 @@ begin
   Emu :=Integer(cbEmulator.Items.Objects[cbEmulator.ItemIndex]);
 
 
-
   if Game.oper = opEdit then
   begin
 
@@ -220,6 +222,7 @@ begin
     qGames_Update.ParamByName('displayname').AsString := edtDEFAULT_DISPLAY_NAME.Text;
     qGames_Update.ParamByName('emu').AsInteger := Emu;
     qGames_Update.ParamByName('gen').AsInteger := cbGENRE.ItemIndex;
+
     if edtLoadTime.Text <> '' then
       qGames_Update.ParamByName('loadtime').AsInteger := StrToInt(edtLoadTime.Text)
     else
@@ -230,14 +233,13 @@ begin
     else
       qGames_Update.ParamByName('coinduration').Clear;
 
-
     qGames_Update.ParamByName('defaultconfig').AsString := '';
     qGames_Update.ParamByName('supportfeatures').AsInteger := 28;
+
     if edtCOIN_INSERT_MODE.Text <> '' then
       qGames_Update.ParamByName('coininsertmode').AsInteger := StrToInt(edtCOIN_INSERT_MODE.Text)
     else
       qGames_Update.ParamByName('coininsertmode').Clear;
-
 
     qGames_Update.ParamByName('flag1').Clear;
     qGames_Update.ParamByName('flag2').Clear;
@@ -360,7 +362,6 @@ begin
         edtFILE_NAME.Text := OpenDialog.FileName;
         edtROM_NAME.Text := TPath.GetFileNameWithoutExtension(OpenDialog.FileName);
         edtDEFAULT_DISPLAY_NAME.Text := edtROM_NAME.Text;
-
     end;
 
   end;
@@ -368,16 +369,31 @@ end;
 
 procedure TfrmAddFile.SpeedButton4Click(Sender: TObject);
 begin
- OpenDialog.Filter := 'MPEG-4 files (*.mp4)|*.mp4';
- OpenDialog.DefaultExt := 'mp4';
- if OpenDialog.Execute() then
-  begin
-    if FileExists(OpenDialog.FileName) then
-    begin
-        edtVideoFile.Text := OpenDialog.FileName;
-    end;
+ edtVideoFile.Text := clipboard.AsText;
+end;
 
+procedure TfrmAddFile.sbOpenFileClick(Sender: TObject);
+begin
+ if rdFileType.ItemIndex = 0 then
+ begin
+   OpenDialog.Filter := 'MPEG-4 files (*.mp4)|*.mp4';
+   OpenDialog.DefaultExt := 'mp4';
+   if OpenDialog.Execute() then
+    begin
+      if FileExists(OpenDialog.FileName) then
+      begin
+          edtVideoFile.Text := OpenDialog.FileName;
+      end;
+    end;
+  end
+  else
+  begin // Download Youtube video
+    if edtFILE_NAME.Text <> '' then
+    begin
+
+    end;
   end;
+
 end;
 
 procedure TfrmAddFile.FillComboBox;
@@ -388,6 +404,7 @@ begin
   begin
     Emu[i].Name := Emuladores[i];
     Emu[i].Id := EmuCod[i];
+    Emu[i].Ext := Emu_FileExt[i];
   end;
 
   cbGenre.Items.Clear;
@@ -407,7 +424,7 @@ end;
 
 procedure TfrmAddFile.Edit(Data : TGame);
 var
-  emu_dir : String;
+  file_ext, emu_dir : String;
   i : Integer;
 begin
 
@@ -429,26 +446,82 @@ begin
         cbEMULATOR.ItemIndex :=  i;
     end;
 
-
     emu_dir := cbEMULATOR.Text;
     if (emu_dir = 'PS') or (emu_dir = 'N64')
        or (emu_dir = 'PPSSPP') then
+    begin
+      if emu_dir = 'PPSSPP' then file_ext := '.iso';
+      if emu_dir = 'N64' then file_ext := '.n64';
       emu_dir := 'family';
+    end;
 
     if (emu_dir = 'FBA42_FMY') then
+    begin
       emu_dir := 'fba42';
+      file_ext := '.zip';
+    end;
+
+    if Pos('MAME', emu_dir) <> 0 then
+    // MAME19 or MAME37 or MAME139 or MAME78 and MAME199' //
+    begin
+      file_ext := '.zip';
+    end;
+
+    if Pos('FBA', emu_dir) <> 0 then
+     // 'FBA42' AND  FBA42_FMY //
+    begin
+      file_ext := '.fs';
+
+    end;
+
+    if (emu_dir = 'DC') then
+    begin
+      file_ext := '.cdi';
+    end;
+
+    if (emu_dir = 'PCE') then
+    begin
+      file_ext := '.pce';
+    end;
+
+    if (emu_dir = 'MD') then
+    begin
+      file_ext := '.bin';
+    end;
+
+    if (emu_dir = 'GBC') then
+    begin
+      file_ext := '.gbc';
+    end;
+
+    if (emu_dir = 'GBA') then
+    begin
+      file_ext := '.gba';
+    end;
+
+    if (emu_dir = 'SFC') then
+    begin
+      file_ext := '.smc';
+    end;
+
+    if (emu_dir = 'FC') then
+    begin
+      file_ext := '.nes';
+    end;
 
 
-    edtFILE_NAME.Text := game.SD_DRIVE + GAMESDIR + emu_dir + '\' + ROM_NAME + '\';
-    edtVideoFile.Text := game.SD_DRIVE + GAMESDIR + emu_dir + '\' + ROM_NAME + '\' +
+
+    edtFILE_NAME.Text := game.SD_DRIVE + ':' + GAMESDIR + emu_dir + '\' + ROM_NAME + '\' + ROM_NAME + file_ext;
+
+    edtVideoFile.Text := game.SD_DRIVE + ':' + GAMESDIR + emu_dir + '\' + ROM_NAME + '\' +
                          ROM_NAME + '.mp4';
 
 
-    if (emu_dir <> 'family') then
+{    if (emu_dir <> 'family') then
     begin
       edtFILE_NAME.Text := edtFILE_NAME.Text + ROM_NAME +'.zip';
     end;
-
+}
     //  GENRE := 0;
     cbGenre.ItemIndex := GENRE;
     edtLoadTime.Text := IntToStr(LOAD_TIME);

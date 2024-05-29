@@ -10,6 +10,7 @@ object frmMain: TfrmMain
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = mnMain
   OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
@@ -61,7 +62,7 @@ object frmMain: TfrmMain
       Height = 48
     end
     object sbOpen: TSpeedButton
-      Left = 232
+      Left = 223
       Top = 8
       Width = 69
       Height = 48
@@ -2389,6 +2390,7 @@ object frmMain: TfrmMain
         OnDrawDataCell = DBGrid1DrawDataCell
         OnDrawColumnCell = DBGrid1DrawColumnCell
         OnDblClick = DBGrid1DblClick
+        OnTitleClick = DBGrid1TitleClick
         Columns = <
           item
             Expanded = False
@@ -2686,13 +2688,11 @@ object frmMain: TfrmMain
         Top = 146
         Width = 23
         Height = 22
-        Hint = 'Export Favorites to excel'
-        ImageIndex = 2
+        Action = actSaveFav
         Images = IlComunes
         Flat = True
         ParentShowHint = False
         ShowHint = True
-        OnClick = sbExportClick
       end
       object DBEdit4: TDBEdit
         Left = 70
@@ -6207,5 +6207,91 @@ object frmMain: TfrmMain
     DataSet = qFavorites
     Left = 409
     Top = 253
+  end
+  object mnMain: TMainMenu
+    Images = IlComunes
+    Left = 609
+    Top = 301
+    object File1: TMenuItem
+      Caption = 'File'
+      object Clearfavoritelist1: TMenuItem
+        Caption = 'Clear favorite list'
+        OnClick = Clearfavoritelist1Click
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object ImportFavorites1: TMenuItem
+        Action = actImport
+      end
+      object SaveFavoritesto1: TMenuItem
+        Action = actSaveFav
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Exportto1: TMenuItem
+        Action = actSaveDB
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Close1: TMenuItem
+        Caption = 'Close'
+        OnClick = Close1Click
+      end
+    end
+    object ools1: TMenuItem
+      Caption = 'Tools'
+      object YouTubeDownload1: TMenuItem
+        Caption = 'YouTube Download'
+        OnClick = YouTubeDownload1Click
+      end
+    end
+  end
+  object SaveDialog: TSaveDialog
+    DefaultExt = 'csv'
+    FileName = 'Favorites'
+    Filter = 
+      'CSV (Comma delimited) (*.csv)|*.csv|Microsoft Excel (*.xml)|*.xm' +
+      'l'
+    Left = 545
+    Top = 357
+  end
+  object ActionList1: TActionList
+    Images = IlComunes
+    Left = 617
+    Top = 229
+    object actSaveDB: TAction
+      Caption = 'Save games to..'
+      OnExecute = actSaveDBExecute
+    end
+    object actSaveFav: TAction
+      Caption = 'Save Favorites to..'
+      ImageIndex = 2
+      OnExecute = actSaveFavExecute
+    end
+    object actImport: TAction
+      Caption = 'Import favorites'
+      OnExecute = actImportExecute
+    end
+  end
+  object OpenDialog: TOpenDialog
+    Filter = 
+      'CSV (Comma delimited) (*.csv)|*.csv|Microsoft Excel (*.xml)|*.xm' +
+      'l'
+    Left = 545
+    Top = 301
+  end
+  object FDMemTable: TFDMemTable
+    FetchOptions.AssignedValues = [evMode]
+    FetchOptions.Mode = fmAll
+    ResourceOptions.AssignedValues = [rvSilentMode]
+    ResourceOptions.SilentMode = True
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
+    UpdateOptions.CheckRequired = False
+    UpdateOptions.AutoCommitUpdates = True
+    Left = 673
+    Top = 413
   end
 end

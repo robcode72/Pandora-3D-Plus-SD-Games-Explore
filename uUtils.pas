@@ -2,11 +2,17 @@ unit uUtils;
 
 interface
 
-uses Winapi.Windows, System.SysUtils;
+uses Winapi.Windows, System.SysUtils,
+     FireDAC.Comp.BatchMove,
+     FireDAC.Comp.BatchMove.Text,
+     FireDAC.Comp.BatchMove.DataSet,
+     Data.DB, FireDAC.Comp.Client,
+     VCL.Dialogs;
 
 type TEmuladores = record
       Name : String;
       Id : Integer;
+      Ext : String;
 end;
 
 const
@@ -16,7 +22,9 @@ const
 
   Genero: TArray<String> = ['Other', 'Fighting', 'Action', 'Shotting', 'Sport', 'Puzzle', 'Racing'];
 
-  EmuCod : TArray<Integer> = [0,2,3,4,5,6,7,8,10,11,12,13,14,15,17,18,19,21];
+  EmuCod : TArray<Integer> = [0,2,3,4,5,6,7,8,10,11,12,13,14,15,17,18,19,21]; // Emulator Internal Code
+
+  Emu_FileExt: TArray<String> = ['.zip', '.iso', '', '', '', '', '']; // Emulator File Extension
 
   ROMPATH_DC : String = '\games\data\DC\';
   ROMPATH_FAMILY : String = '\games\data\family\';
@@ -32,7 +40,11 @@ const
   ROMPATH_PCE : String = '\games\data\PCE\';
   ROMPATH_SFC : String = '\games\data\SFC\';
   ROMPATH_WSC : String = '\games\data\WSC\';
+
   function EjectVolume(ADrive: char): boolean;
+  procedure SaveDatasetToCSV(IncludeFieldNames : Boolean; Dataset : TDataset; Filename : String);
+  procedure ImportCSVToDataset(IncludeFieldNames : Boolean; dDataset : TDataset; Filename : String);
+  procedure ImportFavorites(RDataSet : TDataSet; WDataSet : TFDQuery; DelFav : Boolean);
 
 implementation
 
@@ -146,4 +158,91 @@ begin
     CloseHandle(VolumeHandle);
   end;
 end;
+
+procedure SaveDatasetToCSV(IncludeFieldNames : Boolean; Dataset : TDataset; Filename : String);
+var
+  TextWriter : TFDBatchMoveTextWriter;
+  DataSetReader : TFDBatchMoveDataSetReader;
+  BatchMove : TFDBatchMove;
+begin
+  BatchMove := nil;
+  try
+    BatchMove := TFDBatchMove.Create(nil);
+    TextWriter := TFDBatchMoveTextWriter.Create(BatchMove);
+    DataSetReader := TFDBatchMoveDataSetReader.Create(BatchMove);
+
+    DataSetReader.DataSet := Dataset;
+
+    TextWriter.FileName := Filename;
+    TextWriter.DataDef.WithFieldNames := IncludeFieldNames;
+
+    BatchMove.Reader := DataSetReader;
+    BatchMove.Writer := TextWriter;
+    BatchMove.Options := BatchMove.Options + [poClearDest]; //Overrides file if it already exists
+    BatchMove.Execute;
+  finally
+    BatchMove.Free;
+    ShowMessage('The file has been exported')
+  end;
+end;
+
+procedure ImportCSVToDataset(IncludeFieldNames : Boolean; dDataset : TDataset; Filename : String);
+var
+  TextReader : TFDBatchMoveTextReader;
+  DataSetReader : TFDBatchMoveDataSetReader;
+  BatchMove : TFDBatchMove;
+  // TFDBatchMoveTextReader
+
+begin
+  BatchMove := nil;
+  try
+    BatchMove := TFDBatchMove.Create(nil);
+    TextReader := TFDBatchMoveTextReader.Create(BatchMove);
+    //DataSetReader := TFDBatchMoveDataSetReader.Create(BatchMove);
+
+    //DataSetReader.DataSet := Dataset;
+
+    TextReader.FileName := Filename;
+    TextReader.DataDef.WithFieldNames := IncludeFieldNames;
+    TextReader.DataDef.Separator := ';';
+
+    with TFDBatchMoveDataSetWriter.Create(BatchMove) do begin
+       // Set destination dataset
+       DataSet := dDataset;
+       // Do not set Optimise to True, if dataset is attached to UI
+       Optimise := False;
+    end;
+
+    BatchMove.GuessFormat;
+    BatchMove.Execute;
+    dDataset.Open;
+  finally
+    BatchMove.Free;
+  end;
+end;
+
+procedure ImportFavorites(RDataSet : TDataSet; WDataSet : TFDQuery; DelFav : Boolean);
+var
+  i : Integer;
+begin
+// ## Reset Favorite List ##
+   WDataSet.SQL.Text := 'UPDATE option SET TOP_ID =0 WHERE TOP_ID > 0 ';
+   WDataSet.ExecSQL;
+
+   RDataSet.First;
+   WDataSet.SQL.Text := 'UPDATE option SET TOP_ID =:num WHERE ROM_NAME =:rom_name';
+
+   while not RDataSet.Eof do // Read the MemTable with the Favorites Roms
+   begin
+    //i := WDataSet.RecordCount +1;
+    WDataSet.ParamByName('num').AsInteger := RDataSet.FieldByName('TOP_ID').AsInteger; // Mark game Rom as Favorites
+    WDataSet.ParamByName('rom_name').AsString := RDataSet.FieldByName('ROM_NAME').AsString;
+    WDataSet.ExecSQL;
+    RDataSet.Next;
+   end;
+   ShowMessage('The file has been Imported');
+end;
+
 end.
+
+
