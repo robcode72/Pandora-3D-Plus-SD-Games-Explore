@@ -7,9 +7,11 @@ This program helps you to add your favorite games to your Pandora Box 3D plus SD
 
 HOW TO USE:
 -----------
-Insert your micro SD card into youir PC, run the program.
-Locate the game to add
+Insert your Pandora Box 3D+ micro SD card into your PC, and then run the program.
+Search for the game to add as your favorite
 Double click to add it to your favorte list.
+
+When your ready just insert the SD card once again into your Pandora3D+ and turn on. The game should appear as Favorite.
 
 [download file here](Win32/Release/PandoraBoxEx.exe)
 
